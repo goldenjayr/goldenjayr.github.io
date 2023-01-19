@@ -1,13 +1,13 @@
 import { CSS3DObject } from './libs/three.js-r132/examples/jsm/renderers/CSS3DRenderer.js';
-// import { CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
-import { loadGLTF, loadTextures } from './libs/loader.js'
+import { loadGLTF, loadTextures, loadVideo } from './libs/loader.js'
+import * as utils from './utils.js'
 const THREE = window.MINDAR.IMAGE.THREE
 
 async function start() {
 
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.body,
-    imageTargetSrc: '../../assets/targets/zorojuro_hoodie_crop.mind',
+    imageTargetSrc: './assets/targets/zorojuro_hoodie_crop.mind',
     // filterMinCF: 0.0000001,
     // filterBeta: 0.00001
   })
@@ -23,20 +23,21 @@ async function start() {
 
   gltf.scene.scale.set(0.01, 0.01, 0.01);
 
-  const [hoodie_texture, logo_texture] = await loadTextures(['./assets/models/hoodie/textures/dee7b4e3-1469-44ff-a7c4-055a73f47683.png', './assets/images/23point5_logo.png'])
-  // hoodie_texture.magFilter = THREE.LinearFilter
-  // hoodie_texture.minFilter = THREE.LinearMipMapNearestFilter
-  // hoodie_texture.wrapS = THREE.RepeatWrapping
-  // hoodie_texture.wrapT = THREE.RepeatWrapping
-  // hoodie_texture.flipY = false
-  // hoodie_texture.encoding = THREE.sRGBEncoding
-  // const material = new THREE.MeshStandardMaterial({ map: hoodie_texture })
+  const [logo_texture] = await loadTextures(['./assets/images/23point5_logo.png'])
   gltf.scene.position.set(0.7, -0.8, 0)
-  // gltf.scene.children.map((item) => {
-  //   item.material = material
-  //   item.material.needsUpdate = true
-  // })
 
+  // create videos
+  const zoroVideo = await loadVideo("./assets/videos/zoro_video.mp4");
+  zoroVideo.muted = true;
+  zoroVideo.loop = true
+  zoroVideo.play()
+  console.log("🚀 ~ file: main.js:33 ~ start ~ zoroVideo", zoroVideo)
+  const zoroVideoTexture = new THREE.VideoTexture(zoroVideo);
+  const zoroVideoGeometry = new THREE.PlaneGeometry(2, 1)
+  const zoroVideoMaterial = new THREE.MeshBasicMaterial({ map: zoroVideoTexture });
+
+  const zoroVideoMesh = new THREE.Mesh(zoroVideoGeometry, zoroVideoMaterial);
+  zoroVideoMesh.position.set(1, 1, -0.5)
 
   // create the logo
   const planeGeometry = new THREE.PlaneGeometry(1, 0.5);
@@ -56,17 +57,37 @@ async function start() {
   textElement.style.fontFamily = "arial";
 
 
+  // create run button
+  const runButtonElement = utils.createActionButtonElement('Run')
+  const runButtonObj = new CSS3DObject(runButtonElement)
+  runButtonObj.position.set(1500, 0, 0)
+
+  // create ninja run button
+  const ninjaRunButtonElement = utils.createActionButtonElement('Ninja Run')
+  const ninjaRunButtonObj = new CSS3DObject(ninjaRunButtonElement)
+  ninjaRunButtonObj.position.set(1500, 400, 0)
+
+  // create dance button
+  const danceButtonElement = utils.createActionButtonElement('Dance')
+  const danceButtonObj = new CSS3DObject(danceButtonElement)
+  danceButtonObj.position.set(1500, -400, 0)
+
 
   const anchor = mindarThree.addAnchor(0);
   anchor.group.add(gltf.scene);
   anchor.group.add(logo)
+  anchor.group.add(zoroVideoMesh)
 
   const cssAnchor = mindarThree.addCSSAnchor(0);
   cssAnchor.group.add(textObj);
+  cssAnchor.group.add(runButtonObj)
+  cssAnchor.group.add(ninjaRunButtonObj)
+  cssAnchor.group.add(danceButtonObj)
 
 
   // handle buttons
   logo.userData.clickable = true
+  runButtonObj.userData.clickable = true
 
   document.body.addEventListener("click", (e) => {
     const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -81,6 +102,7 @@ async function start() {
       while (o.parent && !o.userData.clickable) {
         o = o.parent
       }
+      console.log('o', o)
       if (o.userData.clickable) {
         if (o === logo) {
           const params = new URLSearchParams(window.location.search)
@@ -100,11 +122,34 @@ async function start() {
     // cube.rotation.z -= SPEED * 3;
   }
 
+  console.log("🚀 ~ file: main.js:122 ~ start ~ gltf", gltf)
   // animations
-  console.log("🚀 ~ file: main.js:103 ~ start ~ gltf", gltf)
   const mixer = new THREE.AnimationMixer(gltf.scene)
-  const action = mixer.clipAction(gltf.animations[4])
-  action.play()
+  const idleAction = mixer.clipAction(gltf.animations[0])
+  const danceAction = mixer.clipAction(gltf.animations[4])
+  const runAction = mixer.clipAction(gltf.animations[2])
+  const ninjaRunAction = mixer.clipAction(gltf.animations[1])
+  idleAction.play()
+
+  let currentAction = idleAction
+
+  runButtonElement.addEventListener('click', (e) => {
+    runAction.crossFadeFrom(currentAction, 0.5)
+    runAction.reset().play()
+    currentAction = runAction
+  })
+
+  ninjaRunButtonElement.addEventListener('click', (e) => {
+    ninjaRunAction.crossFadeFrom(currentAction, 0.5)
+    ninjaRunAction.reset().play()
+    currentAction = ninjaRunAction
+  })
+
+  danceButtonElement.addEventListener('click', (e) => {
+    danceAction.crossFadeFrom(currentAction, 0.5)
+    danceAction.reset().play()
+    currentAction = danceAction
+  })
 
   const clock = new THREE.Clock()
   await mindarThree.start();
