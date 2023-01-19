@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const img = document.getElementById('bitmap')
     const imgBitmap = await createImageBitmap(img)
     const gltfObject = await loadGLTF('../data/models/zoro/zoro.glb')
+    const mixer = new THREE.AnimationMixer(gltfObject)
+    const action = mixer.clipAction(gltfObject.animations[0])
+    action.play()
     const group = new THREE.Group()
     group.add(gltfObject.scene)
 
@@ -37,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
+    scene.add(group)
 
 
     renderer.xr.addEventListener("sessionstart", (e) => {
@@ -67,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
       });
+      // function render() {}
     }
     const end = async () => {
       currentSession.end();
