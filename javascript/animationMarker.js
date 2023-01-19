@@ -6,7 +6,6 @@ createImageBitmap(img).then(x => { imgBitmap = x });
 let play = false
 
 // load model...
-let gltfObject = undefined
 let mixer, animationAction, group
 
 let clock = new THREE.Clock()
