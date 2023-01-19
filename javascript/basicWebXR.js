@@ -1,4 +1,6 @@
 
+import { loadGLTF } from './lib/loader.js'
+
 document.addEventListener('DOMContentLoaded', () => {
   const initialize = async () => {
     const arButton = document.querySelector("#ar-button");
@@ -10,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
       arButton.disabled = true;
       return;
     }
+
+    const img = document.getElementById('bitmap')
+    const imgBitmap = await createImageBitmap(img)
+    const gltfObject = await loadGLTF('../data/models/zoro/zoro.glb')
+    const group = new THREE.Group()
+    group.add(gltfObject.scene)
 
     // build three.js scene
     const scene = new THREE.Scene();
@@ -40,7 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentSession = null;
     const start = async () => {
-      currentSession = await navigator.xr.requestSession('immersive-ar', { optionalFeatures: ['dom-overlay'], domOverlay: { root: document.body } });
+      currentSession = await navigator.xr.requestSession('immersive-ar', {
+        optionalFeatures: ['dom-overlay', 'image-tracking'], requiredFeatures: ['dom-overlay', 'image-tracking'],
+        trackedImages: [
+          {
+            image: imgBitmap,
+            widthInMeters: 0.05
+          }
+        ],
+        domOverlay: { root: document.body }
+      });
 
       renderer.xr.enabled = true;
       renderer.xr.setReferenceSpaceType('local');
