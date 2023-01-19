@@ -1,4 +1,4 @@
-import { CSS3DObject } from '../../libs/three.js-r132/examples/jsm/renderers/CSS3DRenderer.js';
+import { CSS3DObject } from './libs/three.js-r132/examples/jsm/renderers/CSS3DRenderer.js';
 // import { CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 import { loadGLTF, loadTextures } from './libs/loader.js'
 const THREE = window.MINDAR.IMAGE.THREE
