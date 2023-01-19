@@ -19,11 +19,11 @@ async function start() {
   scene.add(light);
 
 
-  const gltf = await loadGLTF('../../assets/models/zoro/zoro.glb');
+  const gltf = await loadGLTF('./assets/models/zoro/zoro.glb');
 
   gltf.scene.scale.set(0.01, 0.01, 0.01);
 
-  const [hoodie_texture, logo_texture] = await loadTextures(['../../assets/models/hoodie/textures/dee7b4e3-1469-44ff-a7c4-055a73f47683.png', '../../assets/images/23point5_logo.png'])
+  const [hoodie_texture, logo_texture] = await loadTextures(['./assets/models/hoodie/textures/dee7b4e3-1469-44ff-a7c4-055a73f47683.png', './assets/images/23point5_logo.png'])
   // hoodie_texture.magFilter = THREE.LinearFilter
   // hoodie_texture.minFilter = THREE.LinearMipMapNearestFilter
   // hoodie_texture.wrapS = THREE.RepeatWrapping
