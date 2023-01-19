@@ -69,6 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
       await renderer.xr.setSession(currentSession);
       arButton.textContent = "End";
 
+      const refSpace = await currentSession.requestReferenceSpace('local')
+
+      function onXRFrame(t, frame) {
+
+      }
+
+      function render() {
+
+      }
+
       const clock = new THREE.Clock()
       renderer.setAnimationLoop(() => {
         const delta = clock.getDelta()
@@ -77,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         renderer.render(scene, camera);
       });
-      // function render() {}
+      function render() {
+
+      }
     }
     const end = async () => {
       currentSession.end();

@@ -8,42 +8,6 @@ let play = false
 // load model...
 let gltfObject = undefined
 let mixer, animationAction, group
-loadGLTF('../data/models/zoro/zoro.glb').then((gltf) => {
-	console.log("🚀 ~ file: animationMarker.js:12 ~ loadGLTF ~ gltf", gltf)
-	gltfObject = object
-	group = new THREE.Group()
-	group.add(gltf)
-	mixer = new THREE.AnimationMixer(gltfObject)
-	scene.add(group)
-})
-// loader.load('../data/models/zoro/zoro.glb', function (object) {
-// 	object.scale.x = 0.0004;
-// 	object.scale.y = 0.0004;
-// 	object.scale.z = 0.0004;
-// 	object.rotation.y = Math.PI
-//
-// 	group = new THREE.Group()
-// 	group.add(gltfObject)
-
-//
-
-
-// 	// fbxObject.position.z = -3;
-
-// 	scene.add(group);
-// 	loader.load('../static/fbx/animation.fbx', function (object) {
-
-// 		// object.scale.x = 0.001;
-// 		// object.scale.y = 0.001;
-// 		// object.scale.z = 0.001;
-// 		animationAction = mixer.clipAction(
-// 			object.animations[0]
-// 		)
-// 		// fbxObject.position.copy( fbxObject.children[0].position.clone().multiplyScalar(-1))
-// 		animationAction.play()
-// 		// fbxObject.position.z = -3;=
-// 	});
-// });
 
 let clock = new THREE.Clock()
 
@@ -56,6 +20,19 @@ function xwwwform(jsonObject) {
 let camera, scene, renderer, xrRefSpace, gl;
 
 scene = new THREE.Scene();
+
+loadGLTF('../data/models/zoro/zoro.glb').then((gltf) => {
+	console.log("🚀 ~ file: animationMarker.js:12 ~ loadGLTF ~ gltf", gltf)
+	group = new THREE.Group()
+	group.add(gltf.scene)
+	mixer = new THREE.AnimationMixer(gltf.scene)
+	animationAction = mixer.clipAction(
+		gltf.animations[0]
+	)
+	animationAction.play()
+	console.log("🚀 ~ file: animationMarker.js:22 ~ loadGLTF ~ scene", scene)
+	scene.add(group)
+})
 
 
 var ambient = new THREE.AmbientLight(0x222222);
