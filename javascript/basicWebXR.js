@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // create AR object
     const geometry = new THREE.BoxGeometry(0.06, 0.06, 0.06);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(0, 0, -0.3);
     scene.add(mesh);
