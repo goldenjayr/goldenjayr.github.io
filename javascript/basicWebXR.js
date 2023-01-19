@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const img = document.getElementById('bitmap')
     const imgBitmap = await createImageBitmap(img)
     const gltfObject = await loadGLTF('../data/models/zoro/zoro.glb')
-    const mixer = new THREE.AnimationMixer(gltfObject)
+    console.log("🚀 ~ file: basicWebXR.js:19 ~ initialize ~ gltfObject", gltfObject)
+    const mixer = new THREE.AnimationMixer(gltfObject.scene)
     const action = mixer.clipAction(gltfObject.animations[0])
     action.play()
     const group = new THREE.Group()
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSession = null;
     const start = async () => {
       currentSession = await navigator.xr.requestSession('immersive-ar', {
-        optionalFeatures: ['dom-overlay', 'image-tracking'], requiredFeatures: ['dom-overlay', 'image-tracking'],
+        optionalFeatures: ['dom-overlay'], requiredFeatures: ['dom-overlay'],
         trackedImages: [
           {
             image: imgBitmap,
@@ -68,7 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
       await renderer.xr.setSession(currentSession);
       arButton.textContent = "End";
 
+      const clock = new THREE.Clock()
       renderer.setAnimationLoop(() => {
+        const delta = clock.getDelta()
+        if (mixer) {
+          mixer.update(delta)
+        }
         renderer.render(scene, camera);
       });
       // function render() {}
