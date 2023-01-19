@@ -44,7 +44,6 @@ var directionalLight2 = new THREE.DirectionalLight(0xdddddd, 1);
 directionalLight2.position.set(-0.9, -1, -0.4).normalize();
 scene.add(directionalLight2);
 
-
 camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 20000);
 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setPixelRatio(window.devicePixelRatio);
